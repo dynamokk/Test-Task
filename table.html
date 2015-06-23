@@ -1,0 +1,93 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Table task</title>
+  <style>
+  </style>
+</head>
+<body>
+<script>
+
+
+	var addTitle = function(tr,text)
+	{
+		var td =document.createElement('td');
+		td.width = 900;
+		var node = document.createTextNode(text);
+		td.appendChild(node);
+		tr.appendChild(td);
+	};
+
+	var addImage = function(tr,item)
+	{
+		td =document.createElement('td');
+		var a =document.createElement('a');
+		a.href = item.link;
+		var img =document.createElement('img');
+		img.src = item.enclosure.url;
+		img.width = 100;
+		img.height = 50;
+		a.appendChild(img);
+		td.appendChild(a);
+		tr.appendChild(td);
+	};
+
+	var addNoNews = function()
+	{
+		var p = document.createElement('p');
+		var node = document.createTextNode("there aren't any news!");
+		p.appendChild(node);
+		return p;
+	};
+
+	var showSummary = function(e){
+		var display = e.currentTarget.nextSibling.style.display;
+		if(display == 'none')
+		{
+			display = 'block';
+		}
+		else
+		{
+			display = 'none';
+		}
+		e.currentTarget.nextSibling.style.display = display;
+	}
+
+	var fetchData = function(data)
+	{
+		if(data.count == 0)
+		{
+			document.body.appendChild(addNoNews());
+		}
+		else
+		{
+			var table =document.createElement('table');
+			table.width = 1000;
+			var value = data.value;
+			var rows = data.count, cols = 2;
+			for( var row = 0; row < rows; row++) {
+				var item = value.items[row];
+
+				var tr =document.createElement('tr');
+				addTitle(tr,item.title);
+				addImage(tr,item);
+				tr.onclick=showSummary;
+				table.appendChild(tr);
+
+				tr =document.createElement('tr');
+				addTitle(tr,item.description);
+				tr.id = "detail" + row;
+				tr.colspan = "2";
+				tr.style.display="none";
+				table.appendChild(tr);
+			}
+			document.body.appendChild(table);
+		}
+	};
+</script>
+<script src="http://pipes.yahoo.com/pipes/pipe.run?_id=e9a2e77dffb3205d035c4e311d77bbe6&_render=json&_callback=fetchData" onload="fetchData"></script>
+<!--file:///D:/work/test.txt*-->
+</body>
+</html>
+

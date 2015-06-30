@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title></title>
+    <link rel="stylesheet" type="text/css" href="page.css">
+</head>
+<body>
+<table id="news">
+</table>
+<script src="http://code.jquery.com/jquery-latest.min.js"></script>
+<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
+
+<script type="text/html" id="templateTable">
+    <tr class="title">
+        <td>${title}</td>
+        <td><a href="${link}"><img src="${enclosure.url}"/></a></td>
+    </tr>
+    <tr class="description">
+        <td>${description}</td>
+    </tr>
+</script>
+
+<script type="text/html" id="tmplMessage">
+    <p>${message}</p>
+</script>
+
+<script>
+
+    var loadscriptOk = false;
+
+    var addMessage = function(text)
+    {
+        $.tmpl($('#tmplMessage'),{message: text}).appendTo(document.body);
+    };
+
+    var addNoNews = function()
+    {
+        return addMessage("there aren't any news!");
+    };
+
+    var addErrorMessage = function()
+    {
+        return addMessage("Error, script is not loaded!");
+    };
+
+    var showhideSummary = function(e)
+    {
+        var tr = $(e.currentTarget).next();
+        if(tr.css('display') == 'none')
+        {
+            tr.show();
+        }
+        else
+        {
+            tr.hide();
+        }
+
+    }
+
+    var fetchData = function(data)
+    {
+        loadscriptOk = true;
+        if(data.count == 0)
+        {
+            addNoNews();
+        }
+        else
+        {
+            $.tmpl($('#templateTable'),data.value.items).appendTo('#news');
+            $('.title').on('click',showhideSummary);
+        }
+    };
+
+    var checkError = function()
+    {
+        if(!loadscriptOk)
+        {
+            addErrorMessage();
+        }
+
+    }
+</script>
+<script src="http://pipes.yahoo.com/pipes/pipe.run?_id=e9a2e77dffb3205d035c4e311d77bbe6&_render=json&_callback=fetchData" onload="checkError()" onerror="checkError()"></script>
+</body>
+</html>
